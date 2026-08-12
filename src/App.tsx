@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { ClipList } from "./ClipList";
+import { sanitizeClipName } from "./clipName";
 import { parsePlaylistFile, serializePlaylistFile, type Playlist } from "./playlistFile";
+import { useTheme } from "./useTheme";
 import {
   isFileSystemAccessSupported,
   openPlaylistFile,
@@ -21,6 +23,7 @@ function App() {
   const [isDragOver, setIsDragOver] = useState(false);
   const [status, setStatus] = useState<string>("");
   const dragCounter = useRef(0);
+  const { theme, toggleTheme } = useTheme();
 
   const canSaveInPlace = isFileSystemAccessSupported();
 
@@ -96,6 +99,14 @@ function App() {
 
   const handleRemove = useCallback((index: number) => {
     setPlaylist((p) => ({ ...p, cliplist: p.cliplist.filter((_, i) => i !== index) }));
+    setIsDirty(true);
+  }, []);
+
+  const handleFix = useCallback((index: number) => {
+    setPlaylist((p) => ({
+      ...p,
+      cliplist: p.cliplist.map((c, i) => (i === index ? sanitizeClipName(c) : c)),
+    }));
     setIsDirty(true);
   }, []);
 
@@ -177,7 +188,7 @@ function App() {
       </div>
 
       <main className="drop-zone">
-        <ClipList clips={playlist.cliplist} onReorder={handleReorder} onRemove={handleRemove} />
+        <ClipList clips={playlist.cliplist} onReorder={handleReorder} onRemove={handleRemove} onFix={handleFix} />
       </main>
 
       {isDragOver && (
@@ -192,6 +203,23 @@ function App() {
           <span className="hint">Save downloads a new file in this browser (in-place save needs Chrome/Edge)</span>
         )}
       </footer>
+
+      <button
+        className="theme-toggle"
+        onClick={toggleTheme}
+        aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+        title={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+      >
+        {theme === "dark" ? (
+          <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM8 0a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 8 0ZM8 13a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 13ZM16 8a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 16 8ZM3.25 8a.75.75 0 0 1-.75.75H1a.75.75 0 0 1 0-1.5h1.5a.75.75 0 0 1 .75.75ZM13.66 2.34a.75.75 0 0 1 0 1.06l-1.06 1.06a.75.75 0 1 1-1.06-1.06l1.06-1.06a.75.75 0 0 1 1.06 0ZM4.46 11.54a.75.75 0 0 1 0 1.06l-1.06 1.06a.75.75 0 1 1-1.06-1.06l1.06-1.06a.75.75 0 0 1 1.06 0ZM13.66 13.66a.75.75 0 0 1-1.06 0l-1.06-1.06a.75.75 0 1 1 1.06-1.06l1.06 1.06a.75.75 0 0 1 0 1.06ZM4.46 4.46a.75.75 0 0 1-1.06 0L2.34 3.4a.75.75 0 1 1 1.06-1.06l1.06 1.06a.75.75 0 0 1 0 1.06Z" />
+          </svg>
+        ) : (
+          <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M9.598 1.591a.75.75 0 0 1 .785-.175 7 7 0 1 1-8.967 8.967.75.75 0 0 1 .961-.96 5.5 5.5 0 0 0 7.046-7.046.75.75 0 0 1 .175-.786Zm1.616 1.945a7 7 0 0 1-7.678 7.678 5.5 5.5 0 1 0 7.678-7.678Z" />
+          </svg>
+        )}
+      </button>
     </div>
   );
 }

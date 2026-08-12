@@ -70,6 +70,16 @@
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 8px 12px;
+  user-select: none;
+}
+
+.clip-row.selected {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.clip-row.invalid {
+  border-color: var(--danger);
 }
 
 .drag-handle {
@@ -88,6 +98,35 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   color: var(--text-h);
+}
+
+.clip-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.clip-error-message {
+  color: var(--danger);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.fix-btn {
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  font-size: 13px;
+  padding: 3px 10px;
+  line-height: 1.4;
+  border-radius: 6px;
+}
+
+.fix-btn:hover {
+  background: var(--danger);
+  color: var(--bg);
+  border-color: var(--danger);
 }
 
 .remove-btn {
@@ -129,4 +168,31 @@
 
 .hint {
   opacity: 0.6;
+}
+
+.theme-toggle {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  color: var(--text-h);
+  z-index: 10;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+}
+
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
 }
