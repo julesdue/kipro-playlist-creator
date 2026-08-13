@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
+import { AddClipForm } from "./AddClipForm";
 import { ClipList } from "./ClipList";
 import { sanitizeClipName } from "./clipName";
 import { parsePlaylistFile, serializePlaylistFile, type Playlist } from "./playlistFile";
@@ -110,6 +111,14 @@ function App() {
     setIsDirty(true);
   }, []);
 
+  const handleDuplicate = useCallback((index: number) => {
+    setPlaylist((p) => ({
+      ...p,
+      cliplist: [...p.cliplist.slice(0, index + 1), p.cliplist[index], ...p.cliplist.slice(index + 1)],
+    }));
+    setIsDirty(true);
+  }, []);
+
   const handleNameChange = useCallback((name: string) => {
     setPlaylist((p) => ({ ...p, name }));
     setIsDirty(true);
@@ -188,7 +197,14 @@ function App() {
       </div>
 
       <main className="drop-zone">
-        <ClipList clips={playlist.cliplist} onReorder={handleReorder} onRemove={handleRemove} onFix={handleFix} />
+        <ClipList
+          clips={playlist.cliplist}
+          onReorder={handleReorder}
+          onRemove={handleRemove}
+          onFix={handleFix}
+          onDuplicate={handleDuplicate}
+        />
+        <AddClipForm onAdd={(name) => addClips([name])} />
       </main>
 
       {isDragOver && (

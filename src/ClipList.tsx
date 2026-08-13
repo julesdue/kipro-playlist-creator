@@ -20,9 +20,10 @@ interface ClipListProps {
   onReorder: (clips: string[]) => void;
   onRemove: (index: number) => void;
   onFix: (index: number) => void;
+  onDuplicate: (index: number) => void;
 }
 
-export function ClipList({ clips, onReorder, onRemove, onFix }: ClipListProps) {
+export function ClipList({ clips, onReorder, onRemove, onFix, onDuplicate }: ClipListProps) {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
   const items = clips.map((clip, index) => `${index}-${clip}`);
   const [selected, setSelected] = useState<Set<number>>(new Set());
@@ -94,6 +95,7 @@ export function ClipList({ clips, onReorder, onRemove, onFix }: ClipListProps) {
               onClick={(e) => handleRowClick(index, e)}
               onRemove={() => onRemove(index)}
               onFix={() => onFix(index)}
+              onDuplicate={() => onDuplicate(index)}
             />
           ))}
         </ol>
@@ -109,6 +111,7 @@ function ClipRow({
   onClick,
   onRemove,
   onFix,
+  onDuplicate,
 }: {
   id: string;
   clip: string;
@@ -116,6 +119,7 @@ function ClipRow({
   onClick: (e: React.MouseEvent) => void;
   onRemove: () => void;
   onFix: () => void;
+  onDuplicate: () => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
   const valid = isValidClipName(clip);
@@ -153,6 +157,17 @@ function ClipRow({
           </button>
         </span>
       )}
+      <button
+        className="duplicate-btn"
+        onClick={(e) => {
+          e.stopPropagation();
+          onDuplicate();
+        }}
+        aria-label={`Duplicate ${clip}`}
+        title="Duplicate"
+      >
+        ⧉
+      </button>
       <button
         className="remove-btn"
         onClick={(e) => {

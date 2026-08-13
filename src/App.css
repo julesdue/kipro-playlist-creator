@@ -129,6 +129,21 @@
   border-color: var(--danger);
 }
 
+.duplicate-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-h);
+  opacity: 0.6;
+  font-size: 14px;
+  padding: 2px 8px;
+  line-height: 1;
+}
+
+.duplicate-btn:hover {
+  border: none;
+  opacity: 1;
+}
+
 .remove-btn {
   background: transparent;
   border: none;
@@ -141,6 +156,31 @@
 .remove-btn:hover {
   border: none;
   opacity: 0.75;
+}
+
+.add-clip-form {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 640px;
+  margin-top: 16px;
+}
+
+.add-clip-form input {
+  flex: 1;
+  min-width: 180px;
+  font-family: var(--mono);
+}
+
+.add-clip-form input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.add-clip-error {
+  flex-basis: 100%;
+  color: var(--danger);
+  font-size: 13px;
 }
 
 .drag-overlay {
