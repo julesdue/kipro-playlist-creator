@@ -5,6 +5,8 @@ into the window to add them to the clip list, reorder by dragging,
 and save back to a `.playlist` file. No backend — everything runs
 client-side.
 
+Github URL: [julesdue.github.io/kipro-playlist-creator](https://julesdue.github.io/kipro-playlist-creator/)
+
 ## File format
 
 A `.playlist` file is JSON:
