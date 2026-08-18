@@ -74,11 +74,10 @@ export function ClipList({ clips, onReorder, onRemove, onFix, onDuplicate, onRen
     const reordered = [...remaining.slice(0, insertAt), ...moving, ...remaining.slice(insertAt)];
     onReorder(reordered);
 
-    if (movingSet.size > 1) {
-      const newSelected = new Set<number>();
-      for (let i = insertAt; i < insertAt + moving.length; i++) newSelected.add(i);
-      setSelected(newSelected);
-    }
+    const newSelected = new Set<number>();
+    for (let i = insertAt; i < insertAt + moving.length; i++) newSelected.add(i);
+    setSelected(newSelected);
+    setLastClicked(insertAt);
   }
 
   if (clips.length === 0) {
