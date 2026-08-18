@@ -119,6 +119,14 @@ function App() {
     setIsDirty(true);
   }, []);
 
+  const handleRenameClip = useCallback((index: number, name: string) => {
+    setPlaylist((p) => ({
+      ...p,
+      cliplist: p.cliplist.map((c, i) => (i === index ? name : c)),
+    }));
+    setIsDirty(true);
+  }, []);
+
   const handleNameChange = useCallback((name: string) => {
     setPlaylist((p) => ({ ...p, name }));
     setIsDirty(true);
@@ -149,7 +157,7 @@ function App() {
   }, [playlist, fileHandle, fileName, canSaveInPlace]);
 
   const handleSaveAs = useCallback(async () => {
-    const suggested = fileName.endsWith(".playlist") ? fileName : `${playlist.name || "untitled"}.playlist`;
+    const suggested = `${playlist.name || "untitled"}.playlist`;
     const contents = serializePlaylistFile(playlist);
     const handle = await saveAsPlaylistFile(contents, suggested);
     if (handle) {
@@ -161,7 +169,16 @@ function App() {
       setIsDirty(false);
       setStatus(`Downloaded ${suggested}`);
     }
-  }, [playlist, fileName, canSaveInPlace]);
+  }, [playlist, canSaveInPlace]);
+
+  const handleClearAndNew = useCallback(() => {
+    if (isDirty && !window.confirm("Discard unsaved changes and start a new playlist?")) return;
+    setPlaylist(EMPTY_PLAYLIST);
+    setFileHandle(null);
+    setFileName("untitled.playlist");
+    setIsDirty(false);
+    setStatus("Started a new playlist");
+  }, [isDirty]);
 
   return (
     <div
@@ -176,9 +193,10 @@ function App() {
         <div className="toolbar-actions">
           <button onClick={handleOpen}>Open…</button>
           <button onClick={handleSave} disabled={!isDirty && !!fileHandle}>
-            Save
+            Save current file
           </button>
-          <button onClick={handleSaveAs}>Save As…</button>
+          <button onClick={handleSaveAs}>Save as new file…</button>
+          <button onClick={handleClearAndNew}>Clear and new…</button>
         </div>
       </header>
 
@@ -203,6 +221,7 @@ function App() {
           onRemove={handleRemove}
           onFix={handleFix}
           onDuplicate={handleDuplicate}
+          onRename={handleRenameClip}
         />
         <AddClipForm onAdd={(name) => addClips([name])} />
       </main>
@@ -236,6 +255,8 @@ function App() {
           </svg>
         )}
       </button>
+
+      <span className="app-version">v{__APP_VERSION__}</span>
     </div>
   );
 }
